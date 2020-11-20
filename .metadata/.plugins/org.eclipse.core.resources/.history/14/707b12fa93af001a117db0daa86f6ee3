@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="jquery-ui-1.12.1.custom/jquery-ui.min.css">
+<style type="text/css">
+	body{
+		margin: 0px;
+	}
+	#header{
+		overflow: hidden;
+	}
+	#header-image{
+		margin: 0px;
+		padding: 50px;		
+		text-align: center;
+		position: relative;
+		background-image: url("/stock.jpg");
+		background-position: 5% 25%;
+	}
+	#container{
+		padding-left: 10%;
+		padding-right: 10%;
+	}
+	
+	#amountModal{
+		text-align: center;
+		font-size: 80%;
+	}
+	.ui-dialog-titlebar-close {
+	    visibility: hidden;
+	 }
+	 
+	 h2{
+	 	//border-left: 5px solid midnightblue;
+	 	//padding-left: 10px;
+	 	margin: 0px;
+	 	color: white;
+	 	text-shadow: 0px 0px 20px black;
+	 }
+	 
+	 .selectable{
+	 	cursor: pointer;
+	 }
+	 
+	 .active{
+	 	background: aliceBlue;
+	 	color: white;
+	 }
+	 
+	 .windows{
+	 	display: inline-block;
+	 	//position: fixed;
+	 	background: white;
+	 	border: 1px solid gray;
+	 	border-radius: 20px;
+	 	overflow: hidden;
+	 }
+	 
+	 #stockWindow{
+	 	width: 55%;
+	 	height: 350px;
+	 }
+	 .contents{
+		overflow: auto;
+	 }
+	 .upside{
+	 	height: 35px;
+	 	background-image: linear-gradient(to right, CornflowerBlue, LightPink);
+	 	text-align: center;
+	 	padding-top: 10px;
+	 	color: white;
+	 }
+	 td{
+	 	border: 1px solid gray;
+	 	color: dimgray;
+	 	text-align: center;
+	 }
+	 th {
+		
+	 }
+	 
+	 .thead{
+	 	border: 1px solid gray;
+		border-radius: 5px;
+	 	height: 30px;
+	 	background: rgb(171, 174, 212);
+	 	color: white;
+	 }
+	 
+	 #myStock{
+	 	width: 43%;
+	 	height: 350px;
+	 	float: right;
+	 }
+	 
+	 #info_Stock{
+	 	display: inline-block;
+	 	width: 55%;
+	 	height: 170px;
+	 	top: 360px;
+	 }
+	 
+	 #info_amount{
+	 	width: 43%;
+	 	height: 280px;
+	 	float: right;
+	 }
+	 
+	#addAmountBtn{
+		display: inline-block;
+		padding: 10px 15px 10px 15px;
+		margin: 10px 30px 10px;
+		color: white;
+		font-weight: bold;
+		background: royalblue;
+		border: 2px solid royalblue;
+		border-radius: 50px;
+		float: right;
+		cursor: pointer;
+		transition: all ease 0.5s;
+	}
+	
+	#addAmountBtn:hover{
+		background: cornflowerblue;
+		border: 2px solid cornflowerblue;
+	}
+	
+
+</style>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+<script type="text/javascript">
+$(function(){
+	var amount = 0;
+	var arrStocks=[];
+	var userno;
+	var result = 0;
+	var added = 0;
+	
+	var inputAmount = false;
+	
+	$("#startedAmount").html(amount);
+	$("#addedAmount").html(added);
+
+	/*
+	$("#stockWindow").draggable();
+	$("#myStock").draggable();
+	$("#info_Stock").draggable();
+	*/
+	//보유 금액 등록
+
+	$("#amountModal").dialog({
+		autoOpen: true,
+		modal: true,
+		buttons: [{
+			text: "입력",
+			"id": "amountSubmit",
+			click: function(){
+				amount = Number($("#setAmount").val());
+				$("#startedAmount").html(amount);
+				var amountVal = {amount: amount};
+				$.ajax("insertUser", {data: amountVal, success: function(no){
+					userno = no;
+					alert("환영합니다.");
+				}});
+				inputAmount = true;
+				$(this).dialog("close");}
+			},{
+			text: "취소",
+			"id": "amountReset",
+			click: function(){
+				$("#setAmount").val("");
+			}
+		}]
+	}); //보유 금액 등록 dialog 끝
+
+	$("#addAmountModal").dialog({
+		autoOpen: false,
+		modal: true,
+		buttons: [{
+			text: "입력",
+			"id": "addAmountSubmit",
+			click: function(){
+				amount = Number(amount) + Number($("#addAmount").val());
+				$.ajax("updateUser", {data: {userno: userno, amount: amount}, success: function(re){
+					alert("보유 금액을 추가했습니다.");
+					added = added + Number($("#addAmount").val());
+					$("#addedAmount").html(added);
+				}});
+				$(this).dialog("close");}
+			},{
+			text: "취소",
+			"id": "addAmountClose",
+			click: function(){
+				$(this).dialog("close");
+			}
+		}]
+	}); //보유 금액 추가 dialog 끝
+	
+	
+	var updatePrice = function(){
+		$.each(arrStocks, function(idx, s){
+			console.log(arrStocks);
+			$.ajax({
+				url: "/updateStocks",
+				data: {stockid: s.stockid},
+				success: function(re){
+					console.log(re);
+				}
+			});
+		});
+	}
+	
+	
+
+	//현재 보유금 & 성과 퍼센트
+	setInterval(function(){
+		$("#nowAmount").html(amount);
+		if(inputAmount){
+			var start = eval($("#startedAmount").html());
+			result = ((amount - (start + added)) / start) * 100;
+		}
+		$("#result").html(result.toFixed(2)+"%");
+	}, 500);
+	
+	$("button").hover(function(){
+		$(this).addClass("ui-state-hover");
+	}, function(){
+		$(this).removeClass("ui-state-hover");
+	})
+	$("button").click(function(){
+		$(this).toggleClass("ui-state-active");
+	});
+	
+	var listStocks = function(){
+		$.ajax("listStocks", {success: function(data){
+			$.each(data, function(idx, stock){
+				var item = $("<td></td>").html(stock.stock_item);
+				var price = $("<td></td>").html(stock.price);
+				var tr = $("<tr class='selectable'></tr>").append(item, price);
+				arrStocks.push(stock);
+				$(tr).attr("idx", idx);
+				$(tr).css("cursor", "pointer");
+				$("#stockTable").append(tr);
+				
+				//종목 클릭
+				$(tr).click(function(){
+					$("#info_Stock").show();
+					$("tr").removeClass("active");
+					$(this).addClass("active");
+					$("#info_Stock").addClass("windows");
+					$("#info_Stock").css("height", "160px");
+					$("#stockTitle").remove();
+					$("#stockDetail").empty();
+					$("#buyTheStock").empty();
+					var idx = $(this).attr("idx");
+					var stock = arrStocks[idx];
+					var title = $("<div class='upside' id='stockTitle'></div>").html("<b>"+ stock.stock_item +"</b>");
+					$("#info_Stock").prepend(title);
+					
+					var buyingBtn =  $( $("<button class='ui-button ui-widget ui-corner-all'></button>").html("<b>매수</b>") ).button();
+					var thead = $("<tr></tr>").append($("<th class='thead' width='30%'></th>").html("상한가"), $("<th class='thead' width='30%'></th>").html("현재가"), $("<th class='thead' width='30%'></th>").html("하한가"));
+					$("#stockDetail").append(thead);
+					var price = $("<td></td>").html("<b>"+stock.price+"</b>");
+					var upperLimit = $("<td></td>").html(Math.ceil(stock.price*1.3));
+					var lowerLimit = $("<td></td>").html(Math.ceil(stock.price*0.7));
+					$("#stockDetail").append($("<tr></tr>").append(upperLimit, price, lowerLimit, buyingBtn));
+					
+					//각 종목 매수 버튼 클릭
+					$(buyingBtn).click(function(){
+						$("#info_Stock").css("height", "280px");
+						$("#buyTheStock").empty();
+						var thead = $("<thead></thead>").append($("<th class='thead' width='30%'></th>").html("종목"),$("<th class='thead' width='15%'></th>").html("수량"),$("<th class='thead' width='20%'></th>").html("단가"), $("<th class='thead' width='35%'></th>").html("가격"));
+						$("#buyTheStock").append(thead);
+						var item = $("<td></td>").html(stock.stock_item);
+						var qty = $("<td></td>").append($("<input type='number' id='qty' min='1'>"));
+						var price = $("<td></td>").html(stock.price);
+						var total = $("<td></td>");
+						var inputQty;
+						setInterval(function(){
+							inputQty = $("#qty").val();
+							$(total).html(inputQty*stock.price);
+						}, 500);
+						var buyingOKBtn =  $( $("<button class='ui-button ui-widget ui-corner-all'></button>").html("<b>매수</b>") ).button();
+						$("#buyTheStock").append($("<tr></tr>").append(item, qty, price, total));
+						$("#buyTheStock").append($("<td colspan='4'></td>").css("border", "0px solid white").html(buyingOKBtn));
+						
+						//매수 클릭
+						$(buyingOKBtn).click(function(){
+							
+							if(inputQty <= 0 || inputQty == null ){
+								alert("입력하신 수량이 올바르지 않습니다. 수량을 확인해주십시오.");
+							}else if(inputQty*stock.price > amount){
+								alert("보유 금액이 부족합니다.");
+							}else{
+								var holding = {stockid: stock.stockid, userno: userno, buyingprice: stock.price, qty: inputQty};
+								$.ajax("isExist", {data: holding, success: function(re){
+									if( re ){
+										$.ajax("getHolding", {data: holding, success: function(h){
+											var pastPrice = h.buyingprice;
+											var pastQty = h.qty;
+											var nowPrice = stock.price;
+											var nowQty = inputQty;
+											
+											var qty = eval(pastQty)+eval(nowQty);
+											var price = Math.ceil(((pastPrice*pastQty)+(nowPrice*nowQty))/qty);
+											var stockid = h.stockid;
+											
+											var update = {stockid: stockid, userno: userno, buyingprice: price, qty: qty};
+											$.ajax("updateHolding", {data: update, success: function(msg){
+												alert(msg);
+												listHolding();
+												amount -= (price * qty);
+												$("#nowAmount").html(amount);
+											}});
+										}});
+
+									}else{
+										$.ajax("insertHolding", {data: holding, success: function(msg){
+											alert(msg);
+											listHolding();
+											amount -= (stock.price*inputQty);
+											$("#nowAmount").html(amount);
+										}});
+									}
+								}});
+								$("#info_Stock").hide();
+							}
+						});
+					});
+				});
+			});
+		}});
+	}
+	
+	listStocks();
+	
+	var listHolding = function(){
+		$("#holdingTable > tr").remove();
+		var no = {userno: userno};
+		$.ajax("listHolding", {data: no, success: function(data){
+			$.each(data, function(idx, h){
+				var item = $("<td></td>").html(h.stock_item);
+				var qty = $("<td></td>").html(h.qty);
+				var total = $("<td></td>").html(Math.ceil(h.buyingprice*h.qty));
+				var sellingBtn = $("<button class='ui-button ui-widget ui-corner-all'></button>").attr("stockNum", h.stockid);
+				$(sellingBtn).html("<b>매도</b>").button();
+				$("#holdingTable").append( $("<tr></tr>").append(item, qty, total, sellingBtn) );
+
+				$(sellingBtn).click(function(){
+					var stockNum = $(this).attr("stockNum");
+					var hold = {stockid: stockNum, userno: userno};
+					$.ajax("getHolding", {data: hold, success: function(h){
+						var total = Math.ceil(h.buyingprice*h.qty);
+						var re = confirm("매도하시겠습니까?");
+						var data = {stockid: h.stockid, userno: h.userno};
+						if( re ){
+							$.ajax("deleteHolding", {data: data, success: function(msg){
+								alert(msg);
+								amount += total;
+								var user = {userno: userno, amount: amount}
+								$.ajax("updateUser", {data: user, success: function(re){
+									
+								}})
+								listHolding();
+							}});
+						}
+					}});
+				});
+			});
+		}});
+	}
+
+	$("#addAmountBtn").on("click", function(){
+		$("#addAmount").val("");
+		$("#addAmountModal").dialog("open");
+	});
+	
+});
+</script>
+</head>
+<body>
+	<div id="header">
+		<div id="header-image">
+			<h2>주식 모의 거래</h2>
+		</div>
+	</div>
+	<br>
+	<div id="container">
+		<!-- 주식 종목 창 -->
+		<div id="stockWindow" class="windows">
+			<div class="upside"><b>종목</b></div>
+			<div class="contents" align="center"><br>
+				<table id="stockTable" width="90%">
+					<thead>
+						<th class="thead" width="65%">종목명</th>
+						<th class="thead">현재가</th>
+					</thead>
+				</table>
+			</div>
+		</div>
+		<!-- 보유주 -->
+		<div id="myStock" class="windows">
+			<div class="upside"><b>보유주</b></div>
+			<div class="contents" align="center"><br>
+				<table width="90%" id="holdingTable">
+					<thead>
+						<th class="thead" width="40%">보유주</th>
+						<th class="thead" width="15%">보유수량</th>
+						<th class="thead" width="30%">총금액</th>
+						<th class="thead" width="15%">매도</th>
+					</thead>
+				</table>
+			</div>
+		</div>
+		<!-- 주 정보 -->
+		<div id="info_Stock">
+			<div class="contents" align="center"><br>
+				<table id="stockDetail" width="90%">
+					
+				</table>
+			</div>
+	
+			<div class="contents" align="center"><br>
+				<table id="buyTheStock" width="90%">
+					
+				</table>
+			</div>
+		</div>
+		<!-- 내 보유금액 정보 -->
+		<div id="info_amount" class="windows">
+			<div class="upside"><b>보유금</b></div>
+			<div class="contents" align="center"><br>
+				<table width="90%" id="amountTable">
+					<tr>
+						<td class="thead" width="35%">시작 보유금</td>
+						<td id="startedAmount"></td>
+					</tr>
+					<tr>
+						<td class="thead" width="35%">추가 보유금</td>
+						<td id="addedAmount"></td>
+					</tr>
+					<tr>
+						<td class="thead" width="35%">현재 보유금</td>
+						<td id="nowAmount"></td>
+					</tr>
+					<tr>
+						<td class="thead" width="35%">매매 성과</td>
+						<td id="result"></td>
+					</tr>
+					
+				</table>
+				<div id="addAmountBtn" title="보유금 추가">\</div>
+			</div>
+			
+		</div>
+	</div>
+	 
+	<div id="amountModal" title="보유 금액 설정">
+		<label for="setAmount">보유금액을 입력하십시오.</label><br><br>
+		<input type="number" id="setAmount" name="setAmount"><br>
+	</div>
+	
+	<div id="addAmountModal" title="보유 금액 추가">
+		<label for="addAmount">추가 금액을 입력하십시오.</label><br><br>
+		<input type="number" id="addAmount" name="addAmount"><br>
+	</div>
+	
+</body>
+</html>

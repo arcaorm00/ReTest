@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="holding">
+  <select id="selectAll" resultType="holdingVO">
+    select holdingid, stock_item, s.stockid, userno, buyingprice, qty from holding h, stocks s where h.stockid=s.stockid and userno=#{userno} order by holdingid
+  </select>
+  
+  <select id="getHolding" resultType="holdingVO">
+  	select * from holding where stockid = #{stockid} and userno = #{userno}
+  </select>
+  
+  <insert id="insert">
+  	insert into holding values(#{holdingid}, #{stockid}, #{userno}, #{buyingprice}, #{qty})
+  </insert>
+  
+  <select id="nextNo" resultType="java.lang.Integer">
+  	select nvl(max(holdingid), 0)+1 from holding
+  </select>
+  
+  <select id="isExist" resultType="java.lang.Integer">
+  	select count(*) from holding where stockid=#{stockid} and userno = #{userno}
+  </select>
+  
+  <update id="update">
+  	update holding set buyingprice = #{buyingprice}, qty = #{qty} where stockid = #{stockid} and userno = #{userno}
+  </update>
+  
+  <delete id="delete">
+  	delete holding where stockid = #{stockid} and userno = #{userno}
+  </delete>
+</mapper>
