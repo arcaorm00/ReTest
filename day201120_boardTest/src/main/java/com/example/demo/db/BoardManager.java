@@ -55,9 +55,9 @@ public class BoardManager {
 		return re;
 	}
 	
-	public static int plusHit(BoardVo b) {
+	public static int plusHit(int no) {
 		SqlSession session = factory.openSession();
-		int re = session.update("board.plusHit", b);
+		int re = session.update("board.plusHit", no);
 		session.commit();
 		session.close();
 		return re;

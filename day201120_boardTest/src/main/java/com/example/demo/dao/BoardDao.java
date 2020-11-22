@@ -26,8 +26,8 @@ public class BoardDao {
 		return BoardManager.updateBoard(b);
 	}
 	
-	public int plusHit(BoardVo b) {
-		return BoardManager.plusHit(b);
+	public int plusHit(int no) {
+		return BoardManager.plusHit(no);
 	}
 	
 	public int deleteBoard(int no) {
