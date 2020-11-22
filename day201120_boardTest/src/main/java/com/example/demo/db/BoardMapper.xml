@@ -1,1 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+  <select id="selectAll" resultType="boardVo">
+    select * from board
+  </select>
+  
+  <select id="selectById" resultType="boardVo">
+  	select * from board where no = #{no}
+  </select>
+  
+  <insert id="insert">
+  	insert into board values (#{no}, #{title}, #{content}, #{writer}, 0, sysdate)
+  </insert>
+  
+  <update id="update">
+  	update board set title = #{title}, content = #{content} where no = #{no} 
+  </update>
+  
+  <update id="plusHit">
+  	update board set hit = hit + 1 where no = #{no}
+  </update>
+  
+  <delete id="delete">
+  	delete board where no = #{no}
+  </delete>
+</mapper>
