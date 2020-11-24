@@ -5,7 +5,70 @@
   <link rel="self" href="https://spring.io/blog.atom" />
   <id>http://spring.io/blog.atom</id>
   <icon>https://spring.io/favicon.ico</icon>
-  <updated>2020-11-20T10:54:00Z</updated>
+  <updated>2020-11-23T15:39:00Z</updated>
+  <entry>
+    <title>Spring Native for GraalVM 0.8.3 available now</title>
+    <link rel="alternate" href="https://spring.io/blog/2020/11/23/spring-native-for-graalvm-0-8-3-available-now" />
+    <category term="releases" label="Releases" />
+    <author>
+      <name>S?bastien Deleuze</name>
+    </author>
+    <id>tag:spring.io,2020-11-23:4275</id>
+    <updated>2020-11-23T15:39:00Z</updated>
+    <content type="html">&lt;div class="paragraph"&gt;
+&lt;p&gt;On behalf of everyone that has contributed, I am pleased to announce that &lt;a href="https://github.com/spring-projects-experimental/spring-graalvm-native/releases/tag/0.8.3"&gt;Spring Native for GraalVM 0.8.3&lt;/a&gt; has been released and is available from &lt;a href="https://repo.spring.io/milestone"&gt;Spring milestone repository&lt;/a&gt;, check the updated &lt;a href="https://repo.spring.io/milestone/org/springframework/experimental/spring-graalvm-native-docs/0.8.3/spring-graalvm-native-docs-0.8.3.zip!/reference/index.html"&gt;reference documentation&lt;/a&gt; for more details.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;Spring Native for GraalVM provides an incubating support for compiling Spring applications to native executables using the &lt;a href="https://www.graalvm.org/reference-manual/native-image/"&gt;native-image&lt;/a&gt; compiler, in order to provide a native deployment option designed to be packaged in lightweight containers. In practice, the target is to support your Spring application (typically a Spring Boot one), unmodified, on this new platform.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="whats-new-in-0-8-3"&gt;&lt;a class="anchor" href="#whats-new-in-0-8-3"&gt;&lt;/a&gt;What¡¯s new in 0.8.3&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="spring-boot-2-4-0-baseline"&gt;&lt;a class="anchor" href="#spring-boot-2-4-0-baseline"&gt;&lt;/a&gt;Spring Boot 2.4.0 baseline&lt;/h3&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;0.8.3 is now based on &lt;a href="https://spring.io/blog/2020/11/12/spring-boot-2-4-0-available-now"&gt;Spring Boot 2.4.0&lt;/a&gt; and the first release based on a stable version of Spring Boot.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="graalvm-20-3-0-support"&gt;&lt;a class="anchor" href="#graalvm-20-3-0-support"&gt;&lt;/a&gt;GraalVM 20.3.0 support&lt;/h3&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;0.8.3 is designed for &lt;a href="https://www.graalvm.org/release-notes/20_3/"&gt;GraalVM 20.3.0&lt;/a&gt; that has just been released.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="springbootapplication-and-configuration-with-default-attributes"&gt;&lt;a class="anchor" href="#springbootapplication-and-configuration-with-default-attributes"&gt;&lt;/a&gt;@SpringBootApplication and @Configuration with default attributes&lt;/h3&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;Until now, in order to compile Spring applications to native, you had to use &lt;code&gt;@SpringBootApplication(proxyBeanMethods = false)&lt;/code&gt; and &lt;code&gt;@Configuration(proxyBeanMethods = false)&lt;/code&gt; since CGLIB proxies created by &lt;code&gt;proxyBeanMethods = true&lt;/code&gt; (previous default behavior) are not supported in native.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;As of Spring Native 0.8.3, &lt;code&gt;@SpringBootApplication&lt;/code&gt; and &lt;code&gt;@Configuration&lt;/code&gt; do not create CGLIB proxies anymore, so they are native compliant out of the box. We have also added a verification mechanism that checks that your application and libraries do not use cross &lt;code&gt;@Bean&lt;/code&gt; invocations (only supported with CGLIB proxies) and throw an error if such pattern is detected. You can switch off this verification if needed with &lt;code&gt;-Dspring.native.verify=false&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect2"&gt;
+&lt;h3 id="improved-compatibility"&gt;&lt;a class="anchor" href="#improved-compatibility"&gt;&lt;/a&gt;Improved compatibility&lt;/h3&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;As usual, we are working to improve gradually the scope and the quality of our native support, see the &lt;a href="https://github.com/spring-projects-experimental/spring-graalvm-native/milestone/10?closed=1"&gt;detailed changelog&lt;/a&gt; for more details.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="sect1"&gt;
+&lt;h2 id="whats-next"&gt;&lt;a class="anchor" href="#whats-next"&gt;&lt;/a&gt;What&amp;#8217;s next&lt;/h2&gt;
+&lt;div class="sectionbody"&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;Our next &lt;a href="https://github.com/spring-projects-experimental/spring-graalvm-native/milestone/6"&gt;0.9.0 milestone&lt;/a&gt; expected early 2021 will be an important one since it will materialize the beginning of our beta support on a subset of Spring Boot starters like Spring MVC, WebFlux, Data (JPA, JDBC, Elastic Search, Neo4j, MongoDB, Redis, R2DBC), Security, Batch, Function, etc.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;We are going to do several big refactorings to gradually transform the project into modules that could be integrated later in Spring top level projects. As part of this process, we are going to introduce a set of &lt;a href="https://github.com/spring-projects-experimental/spring-graalvm-native/issues?q=is%3Aissue+is%3Aopen+label%3A%22type%3A+build-time-transformation%22"&gt;build time transformations&lt;/a&gt; that will be done on your application in order to bring Spring Native to the next level in term of robustness and efficiency.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;In parallel, we also collaborate with the GraalVM team on JUnit 5 native testing and helping JVM libraries to support native compilation out of the box in a maintainable way. We will share more on that effort early next year.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- rendered by Sagan Renderer Service --&gt;</content>
+  </entry>
   <entry>
     <title>Spring Data 2020.0 - New and Noteworthy in Spring Data Neo4j 6.0</title>
     <link rel="alternate" href="https://spring.io/blog/2020/11/20/spring-data-2020-0-new-and-noteworthy-in-spring-data-neo4j-6-0" />
@@ -1684,81 +1747,6 @@ PersonRespository.findByName(String): 1 ms - SUCCESS
     <updated>2020-11-05T23:44:26Z</updated>
     <content type="html">&lt;p&gt;Hi, Spring fans! In this episode &lt;a href="http://twitter.com/starbuxman"&gt;Josh Long (@starbuxman)&lt;/a&gt; talks to Spring &lt;a href="http://twitter.com/trisberg"&gt;legend Thomas Risberg (@trisberg)&lt;/a&gt;.&lt;/p&gt;
 &lt;iframe title="Spring legend Thomas Risberg on JDBC, Spring Cloud Data Flow, Kubernetes and so much more" height="122" width="100%" style="border: none;" scrolling="no" data-name="pb-iframe-player" src="https://www.podbean.com/media/player/bqtfb-f17814?from=pb6admin&amp;download=1&amp;version=1&amp;auto=0&amp;share=1&amp;download=1&amp;rtl=0&amp;fonts=Helvetica&amp;skin=1&amp;pfauth=&amp;btn-skin=107"&gt;&lt;/iframe&gt;
-&lt;!-- rendered by Sagan Renderer Service --&gt;</content>
-  </entry>
-  <entry>
-    <title>Spring Security 5.5.0-M1 Released</title>
-    <link rel="alternate" href="https://spring.io/blog/2020/11/04/spring-security-5-5-0-m1-released" />
-    <category term="releases" label="Releases" />
-    <author>
-      <name>Joe Grandja</name>
-    </author>
-    <id>tag:spring.io,2020-11-03:4252</id>
-    <updated>2020-11-04T12:12:50Z</updated>
-    <content type="html">&lt;div class="paragraph"&gt;
-&lt;p&gt;On behalf of the community, I¡¯m pleased to announce the release of
-Spring Security 5.5.0-M1! You can find the complete details in the &lt;a href="https://github.com/spring-projects/spring-security/releases/tag/5.5.0-M1"&gt;release notes&lt;/a&gt; and the highlights below:&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="oauth-2-0"&gt;&lt;a class="anchor" href="#oauth-2-0"&gt;&lt;/a&gt;OAuth 2.0&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="sect4"&gt;
-&lt;h5 id="gh-5502-oauth2token-interface-for-abstractoauth2token"&gt;&lt;a class="anchor" href="#gh-5502-oauth2token-interface-for-abstractoauth2token"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/5502"&gt;gh-5502&lt;/a&gt; - OAuth2Token interface for AbstractOAuth2Token&lt;/h5&gt;
-
-&lt;/div&gt;
-&lt;div class="sect4"&gt;
-&lt;h5 id="gh-9070-use-lobhandler-in-jdbcoauth2authorizedclientservice"&gt;&lt;a class="anchor" href="#gh-9070-use-lobhandler-in-jdbcoauth2authorizedclientservice"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/pull/9070"&gt;gh-9070&lt;/a&gt; - Use LobHandler in JdbcOAuth2AuthorizedClientService&lt;/h5&gt;
-
-&lt;/div&gt;
-&lt;div class="sect4"&gt;
-&lt;h5 id="gh-8765-provide-a-r2dbc-implementation-of-reactiveouath2authorizedclientservice"&gt;&lt;a class="anchor" href="#gh-8765-provide-a-r2dbc-implementation-of-reactiveouath2authorizedclientservice"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/pull/8765"&gt;gh-8765&lt;/a&gt; - Provide a R2dbc implementation of ReactiveOuath2AuthorizedClientService&lt;/h5&gt;
-
-&lt;/div&gt;
-&lt;div class="sect4"&gt;
-&lt;h5 id="gh-7160-jwtdecoders-and-reactivejwtdecoders-should-determine-algorithm-from-jwk-set-endpoint"&gt;&lt;a class="anchor" href="#gh-7160-jwtdecoders-and-reactivejwtdecoders-should-determine-algorithm-from-jwk-set-endpoint"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/7160"&gt;gh-7160&lt;/a&gt; - JwtDecoders and ReactiveJwtDecoders should determine algorithm from JWK Set Endpoint&lt;/h5&gt;
-
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="saml"&gt;&lt;a class="anchor" href="#saml"&gt;&lt;/a&gt;SAML&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="sect4"&gt;
-&lt;h5 id="gh-9177-saml-2-0-asserting-party-metadata-resolution-should-read-signingmethod-elements"&gt;&lt;a class="anchor" href="#gh-9177-saml-2-0-asserting-party-metadata-resolution-should-read-signingmethod-elements"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/9177"&gt;gh-9177&lt;/a&gt; - SAML 2.0 Asserting Party Metadata resolution should read SigningMethod elements&lt;/h5&gt;
-
-&lt;/div&gt;
-&lt;div class="sect4"&gt;
-&lt;h5 id="gh-9131-opensamlauthenticationprovider-should-decrypt-attributes"&gt;&lt;a class="anchor" href="#gh-9131-opensamlauthenticationprovider-should-decrypt-attributes"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/9131"&gt;gh-9131&lt;/a&gt; - OpenSamlAuthenticationProvider should decrypt attributes&lt;/h5&gt;
-
-&lt;/div&gt;
-&lt;div class="sect4"&gt;
-&lt;h5 id="gh-9028-file-based-configuration-for-asserting-party-metadata"&gt;&lt;a class="anchor" href="#gh-9028-file-based-configuration-for-asserting-party-metadata"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/9028"&gt;gh-9028&lt;/a&gt; - File-based Configuration for Asserting Party Metadata&lt;/h5&gt;
-
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="testing"&gt;&lt;a class="anchor" href="#testing"&gt;&lt;/a&gt;Testing&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="sect4"&gt;
-&lt;h5 id="gh-9179-withsecuritycontexttestexecutionlistener-should-support-nested-classes"&gt;&lt;a class="anchor" href="#gh-9179-withsecuritycontexttestexecutionlistener-should-support-nested-classes"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/9179"&gt;gh-9179&lt;/a&gt; - WithSecurityContextTestExecutionListener Should Support Nested Classes&lt;/h5&gt;
-
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="sect1"&gt;
-&lt;h2 id="docs"&gt;&lt;a class="anchor" href="#docs"&gt;&lt;/a&gt;Docs&lt;/h2&gt;
-&lt;div class="sectionbody"&gt;
-&lt;div class="sect4"&gt;
-&lt;h5 id="gh-9178-add-webflux-documentation-for-multiple-filter-chains"&gt;&lt;a class="anchor" href="#gh-9178-add-webflux-documentation-for-multiple-filter-chains"&gt;&lt;/a&gt;&lt;a href="https://github.com/spring-projects/spring-security/issues/9178"&gt;gh-9178&lt;/a&gt; - Add WebFlux Documentation for Multiple Filter Chains&lt;/h5&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;&lt;a href="http://projects.spring.io/spring-security/"&gt;Project Site&lt;/a&gt; |
-&lt;a href="https://docs.spring.io/spring-security/site/docs/5.5.0-M1/reference/html5/"&gt;Reference&lt;/a&gt;
-| &lt;a href="http://stackoverflow.com/questions/tagged/spring-security"&gt;Help&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
 &lt;!-- rendered by Sagan Renderer Service --&gt;</content>
   </entry>
 </feed>
